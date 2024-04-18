@@ -11,7 +11,7 @@
 2. In order to keep the load on the system low, it should check new files only every `sleep_time` seconds
 3. Configurable items
    - monitored_folder
-   - monitored_extension
+   - monitored_pattern
    - backup_folder
    - sleep_time
 

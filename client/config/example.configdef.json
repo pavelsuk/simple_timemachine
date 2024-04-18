@@ -1,5 +1,17 @@
 {
-    "active_config": "test",
-    "test": {},
+	"active_config": "test",
+	"test": {
+		"folders": [
+			"msft"
+		],
+		"sleep_time": 1,
+		"default": {
+			"monitored_pattern": ".bak"
+		},
+		"msft": {
+			"monitored_folder": "full path to monitored folder",
+			"backup_folder": "full path to backup folder"
+		}
+	},
 	"prod": {}
 }
