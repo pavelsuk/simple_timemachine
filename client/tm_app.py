@@ -6,6 +6,8 @@ from appconfig import app_config  # global variable, singleton
 # Alternatively, use test channel
 # pip install -i https://test.pypi.org/simple appconfig-json -U --no-cache-dir
 
+from tm_client import MonitorFolders
+
 class TimeMachineApp(object):
 
     PGM_VERSION = '0.0.1'
@@ -90,7 +92,8 @@ class TimeMachineApp(object):
         return retVal
 
     def run(self):
-        pass
+        monitored_folders = MonitorFolders(self.logger, self.config)
+        monitored_folders.monitor()
 
     def main(self):
         if (self.parse_args()):
