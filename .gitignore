@@ -163,3 +163,4 @@ cython_debug/
 private*
 **/.private/**
 !private**encrypted
+client/test_data/test_backup/**.bak

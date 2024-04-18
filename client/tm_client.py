@@ -1,31 +1,56 @@
 import logging
 import time
+import shutil
 
+from datetime import datetime
+
+from pathlib import Path
 
 from appconfig import AppConfig
 from appconfig import app_config  # global variable, singleton
 
 class MonitorFolder(object):
 
-    def __init__(self, logger):
-        self.logger = logger
-        self.config_default = None
-        self.config_bank = None
-        self._gc = None
-        self._sh_rules = None
-        self._sh_output = None
+    def __init__(self, logger, config_default, config_section):
+        self.logger: logging.Logger = logger
+        # self.config_default = config_default
+        # self.config_section = config_section
+        self._monitored_pattern = config_section.get("monitored_pattern", config_default.get("monitored_pattern"))
+        self._monitored_folder = config_section.get("monitored_folder", config_default.get("monitored_folder"))
+        self._backup_folder = config_section.get("backup_folder", config_default.get("backup_folder"))
+        self.logger.debug(self)
 
-    def __init__(self, logger, config_default, config_folder):
-        self.logger = logger
-        self.config_default = config_default
-        self.config_4_folder = config_folder
+    def __str__(self) -> str:
+        ret = f'_monitored_pattern: {self._monitored_pattern}, '
+        ret += f'_monitored_folder: {self._monitored_folder}, '
+        ret += f'_backup_folder: {self._backup_folder}'
+        return ret
+
+    def get_fnames_in_backup(self):
+        path_backup = Path(self._backup_folder)
+        return [f.name for f in path_backup.glob(self._monitored_pattern)]
+
+    def get_files_in_monitored(self):
+        path_backup = Path(self._monitored_folder)
+        return list(path_backup.glob(self._monitored_pattern))
+
+    def backup_file(self, f_from, backup_fname):
+        self.logger.info(f'Backuping file {f_from.name} to {backup_fname}')
+        full_path_backup = Path(self._backup_folder).joinpath(backup_fname)
+        shutil.copyfile(f_from, full_path_backup)
 
     def check_folder(self):
         self.logger.debug('check_folder - BEGIN')
+        fnames_in_backup = self.get_fnames_in_backup()
+        self.logger.debug(f'fnames_in_backup: {fnames_in_backup }')
+        files_to_be_checked = self.get_files_in_monitored()
+        for f in files_to_be_checked:
+            mtime_str = datetime.fromtimestamp(f.stat().st_mtime).strftime("%Y%m%d_%H%M%S")
+            backup_fname = f'{f.stem}_{mtime_str}{f.suffix}'
+            if backup_fname not in fnames_in_backup:
+                self.backup_file(f, backup_fname)
 
 class MonitorFolders(object):
-    def __init__(self) -> None:
-        pass
 
     def __init__(self, logger, config):
         self.logger = logger
@@ -45,7 +70,7 @@ class MonitorFolders(object):
             self._monitored_folders.append(monitored_folder)
 
     def check_all_folders(self):
-        self.logger.debug(f'check_all_folders - BEGIN')
+        self.logger.debug('check_all_folders - BEGIN')
         for monitored_folder in self._monitored_folders:
             monitored_folder.check_folder()
 

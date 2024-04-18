@@ -42,3 +42,9 @@ Run the application from `client` folder and specify current group from your con
 ``` shell
 python tm_app.py -v=INFO -g=prod
 ```
+
+## Config encryption
+
+``` shell
+python cryptorshell.py encryptdir Q:\dev\_projects\github\simple_timemachine\client\config Q:\dev\_projects\github\simple_timemachine\client\config\encrypted --pattern private* --pubkey simple_time_machine.pub.pem
+```

@@ -56,12 +56,12 @@ class TimeMachineApp(object):
             "-v",
             "--verbosity",
             help="level of verbosity (DEBUG, INFO, WARNING, ERROR, CRITICAL) Default: DEBUG",
-            default='DEBUG')
+            default='INFO')
 
         args = ap.parse_args()
 
         verb_choices = ['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL']
-        verbose_lvl = 'DEBUG'
+        verbose_lvl = 'INFO'
         self._verbose_lvl = verbose_lvl
         if (args.verbosity):
             verbose_lvl = args.verbosity.upper()
@@ -92,6 +92,7 @@ class TimeMachineApp(object):
         return retVal
 
     def run(self):
+        self.logger.info('Running the monitor. Press CTRL+C to cancel the monitoring.')
         monitored_folders = MonitorFolders(self.logger, self.config)
         monitored_folders.monitor()
 
