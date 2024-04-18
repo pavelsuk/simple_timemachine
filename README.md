@@ -23,3 +23,22 @@
 4. All configuration parameters through cmdline
 5. Agent will monitor several folders
 
+
+## Installation
+
+``` shell
+pip install appconfig-json
+### Alternatively, use test channel
+### pip install -i https://test.pypi.org/simple appconfig-json -U --no-cache-dir
+```
+
+
+## How to run it
+
+Run the application from `client` folder and specify current group from your config file or other params.
+
+**Example:**
+
+``` shell
+python tm_app.py -v=INFO -g=prod
+```
